@@ -1,42 +1,21 @@
 import scrapy
-from scrapy.loader import ItemLoader
-from scrapy.loader.processors import TakeFirst, MapCompose, Join
-from scrapeops_scrapy_proxy_sdk.scrapeops_scrapy_proxy_sdk import ScrapeOpsProxyMiddleware
-from scrapeops_scrapy.middleware import ScrapeOpsMiddleware
 
-class LinkedInJobItem(scrapy.Item):
-    Application_deadline = scrapy.Field()
-    Location = scrapy.Field()
-    Employment_form = scrapy.Field()
-    Employment_type = scrapy.Field()
-    Salary_Range = scrapy.Field()
-    Education_level = scrapy.Field()
-    Years_of_Experience = scrapy.Field()
-    Required_languages = scrapy.Field()
-    Markets = scrapy.Field()
-    Skills = scrapy.Field()
-    Description = scrapy.Field()
-
-class LinkedInSpider(scrapy.Spider):
-    name = 'linkedin_spider'
-    start_urls = ['https://www.linkedin.com/jobs/search?keywords=Python%20developer&location=United%20States']
-
-    custom_settings = {
-        'DOWNLOADER_MIDDLEWARES': {
-            ScrapeOpsProxyMiddleware: 400,
-            ScrapeOpsMiddleware: 800
-        },
-        'SCRAPEOPS_EMAIL': 'your@email.com',
-        'SCRAPEOPS_API_KEY': 'your_scrapeops_api_key',
-        'FEED_FORMAT': 'json',
-        'FEED_URI': 'linkedin_jobs.json'
-    }
+class LinkedinJobSpider(scrapy.Spider):
+    name = 'linkedinjobs'
+    allowed_domains = ['linkedin.com']
+    start_urls = ['https://www.linkedin.com/jobs/search?keywords=Software%20Engineer&location=Worldwide']
 
     def parse(self, response):
-        job_listings = response.xpath('//div[contains(@class, "result-card__contents")]')
-        for job in job_listings:
-            loader = ItemLoader(item=LinkedInJobItem(), selector=job)
-            # Extract and map fields from the job listing's HTML
-            # ...
+        # Parse job listings
+        for job in response.css('li.job-result-card'):
+            yield {
+                'title': job.css('h3.job-result-card__title::text').get().strip(),
+                'company': job.css('h4.job-result-card__subtitle > a::text').get().strip(),
+                'location': job.css('span.job-result-card__location::text').get().strip(),
+                'posted': job.css('time.job-result-card__listdate::attr(datetime)').get(),
+            }
 
-            yield loader.load_item()
+        # Pagination
+        next_page = response.css('a.artdeco-pagination__button--next::attr(href)').get()
+        if next_page:
+            yield scrapy.Request(url=response.urljoin(next_page), callback=self.parse)

@@ -23,10 +23,6 @@ SCRAPEOPS_API_KEY = 'a5b0c0ea-6c26-4464-a17d-ef5e7f9ccbf6'
 
 SCRAPEOPS_PROXY_ENABLED = True
 
-DOWNLOADER_MIDDLEWARES = {
-    'scrapeops_scrapy_proxy_sdk.scrapeops_scrapy_proxy_sdk.ScrapeOpsScrapyProxySdk': 725,
-}
-
 EXTENSIONS = {
     'scrapeops_scrapy.extension.ScrapeOpsMonitor': 500, 
 }
