@@ -19,7 +19,7 @@ class LinkedInJobItem(scrapy.Item):
 
 class LinkedInSpider(scrapy.Spider):
     name = 'linkedin_spider'
-    start_urls = ['https://www.linkedin.com/jobs/search?keywords=Software%20Engineer&location=United%20States']
+    start_urls = ['https://www.linkedin.com/jobs/search?keywords=Python%20developer&location=United%20States']
 
     custom_settings = {
         'DOWNLOADER_MIDDLEWARES': {
