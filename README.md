@@ -37,5 +37,5 @@
  
 
  # To Run the Project
- Running the scrapy project: `scrapy crawl linkedinjobs`
+ Running the scrapy project: `scrapy crawl linkedinjobs -o output.json`
  The extracted job listings will be stored in a JSON file called linkedin_jobs.json

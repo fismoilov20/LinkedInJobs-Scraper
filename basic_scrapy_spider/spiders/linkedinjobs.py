@@ -1,8 +1,8 @@
 import scrapy
 from scrapy.loader import ItemLoader
 from scrapy.loader.processors import TakeFirst, MapCompose, Join
-from scrapeops_scrapy_proxy_sdk.middlewares import ScrapeOpsProxyMiddleware
-from scrapeops_scrapy.middlewares import ScrapeOpsMiddleware
+from scrapeops_scrapy_proxy_sdk.middleware import ScrapeOpsProxyMiddleware
+from scrapeops_scrapy.middleware import ScrapeOpsMiddleware
 
 class LinkedInJobItem(scrapy.Item):
     Application_deadline = scrapy.Field()
